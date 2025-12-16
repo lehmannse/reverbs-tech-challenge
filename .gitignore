@@ -1,0 +1,102 @@
+# Root .gitignore for Node/Next.js monorepo (frontend + backend)
+
+# Node dependencies
+node_modules/
+**/node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+**/coverage/
+.nyc_output/
+
+# Compiled output / build artifacts
+.dist/
+dist/
+build/
+out/
+
+# TypeScript
+*.tsbuildinfo
+
+# Next.js
+.next/
+**/.next/
+# Static export
+out/
+# Vercel
+.vercel/
+
+# Turborepo / build caches
+.turbo/
+.cache/
+**/.cache/
+.parcel-cache/
+
+# Storybook
+storybook-static/
+
+# Testing artifacts
+jest-cache/
+jest-stare/
+jest-results.json
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+playwright-report/
+test-results/
+blob-report/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Docker (local/dev artifacts)
+.docker/
+**/.docker/
+*.tar
+*.img
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE settings
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.iml
+
+# Misc temp
+.tmp/
+.temp/
+*.tmp
+
+# SQLite/Local DBs (common in dev)
+*.sqlite
+*.sqlite-journal
+
+# ESLint / linters caches
+.eslintcache
+stylelintcache
+
+# Husky (auto-generated internal helper)
+.husky/_/
