@@ -1,9 +1,9 @@
 {
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
+  "entryFile": "/backend/src/main.js",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "outDir": "dist/backend"
   }
 }
-
-
