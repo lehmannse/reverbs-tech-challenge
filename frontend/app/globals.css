@@ -216,3 +216,21 @@
 .font-gotham {
   font-family: 'Gotham', var(--font-sans);
 }
+
+/* Card enter animation (staggered via --stagger-index) */
+@keyframes cardFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-enter {
+  opacity: 0;
+  animation: cardFadeUp 420ms ease both;
+  animation-delay: calc(var(--stagger-index, 0) * 80ms);
+}

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { apiPost } from '../../lib/api';
+import BackButton from '../../components/BackButton';
 
 export default function BattlePage() {
   const [pokemon1, setPokemon1] = useState('');
@@ -30,7 +31,11 @@ export default function BattlePage() {
 
   return (
     <main className="p-6 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-semibold">Battle (placeholder)</h2>
+      <div className="flex items-center justify-between">
+        <BackButton />
+        <h2 className="text-2xl font-semibold">Battle (placeholder)</h2>
+        <div />
+      </div>
       <form onSubmit={submit} className="mt-4 grid gap-2 max-w-sm">
         <input
           placeholder="First Pokémon name"
