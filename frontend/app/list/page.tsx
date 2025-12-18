@@ -1,15 +1,17 @@
-import Link from 'next/link';
+import { getPokemonList } from '../../lib/api';
+import PokemonCard from '../../components/PokemonCard';
+import { PokemonSummary } from '../../../shared/types/pokemon';
 
-export default function ListPage() {
-	return (
-		<main style={{ padding: 24 }}>
-			<h2>Pokémon List (placeholder)</h2>
-			<p>Coming soon: list fetched from the NestJS backend.</p>
-			<p style={{ marginTop: 16 }}>
-				Example detail link: <Link href="/pokemon/1">Bulbasaur</Link>
-			</p>
-		</main>
-	);
+export default async function ListPage() {
+  const data = await getPokemonList(0, 20);
+  return (
+    <main className="p-6 max-w-6xl mx-auto">
+      <h2 className="text-2xl font-semibold">Pokémon List</h2>
+      <div className="mt-3 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3">
+        {data.results.map((p: PokemonSummary) => (
+          <PokemonCard key={p.id} item={p} />
+        ))}
+      </div>
+    </main>
+  );
 }
-
-
