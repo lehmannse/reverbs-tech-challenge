@@ -234,3 +234,17 @@
   animation: cardFadeUp 420ms ease both;
   animation-delay: calc(var(--stagger-index, 0) * 80ms);
 }
+
+/* Pokemon Classic font-face (placed under /public/fonts) */
+@font-face {
+  font-family: 'PokemonClassic';
+  src: url('/fonts/pokemon-classic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Utility: apply PokemonClassic with safe fallbacks */
+.font-pokemon {
+  font-family: 'PokemonClassic', ui-sans-serif, system-ui, sans-serif;
+}
