@@ -1,12 +1,15 @@
+import WatermarkedPage from '../../../components/WatermarkedPage';
+
 interface PokemonPageProps {
   params: { id: string };
 }
 
-export default function PokemonDetailPage({ params }: PokemonPageProps) {
+export default async function PokemonDetailPage({ params }: PokemonPageProps) {
+  const { id } = await params;
   return (
-    <main className="p-6 max-w-3xl mx-auto">
+    <WatermarkedPage containerClassName="max-w-3xl">
       <h2 className="text-2xl font-semibold">Pokémon Detail (placeholder)</h2>
-      <p className="mt-2 text-slate-700">Pokémon ID: {params.id}</p>
-    </main>
+      <p className="mt-2 text-slate-700">Pokémon ID: {id}</p>
+    </WatermarkedPage>
   );
 }
