@@ -5,15 +5,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
       origin: ['http://localhost:3000'],
-      credentials: true
-    }
+      credentials: true,
+    },
   });
 
   // Optional global prefix for clarity
   // app.setGlobalPrefix('api');
 
-  await app.listen(3000, '0.0.0.0');
+  await app.listen(3001, '0.0.0.0');
 }
 bootstrap();
-
-
