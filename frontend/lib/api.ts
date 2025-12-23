@@ -1,4 +1,7 @@
-import type { PokemonListEnrichedResponse } from '../../shared/types/pokemon';
+import type {
+  PokemonDetailLite,
+  PokemonListEnrichedResponse,
+} from '../../shared/types/pokemon';
 
 function getBaseUrl() {
   const raw = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:3001';
@@ -49,4 +52,8 @@ export function getPokemonList(offset = 0, limit = 20) {
   return apiGet<PokemonListEnrichedResponse>(
     `/pokemon?offset=${offset}&limit=${limit}`
   );
+}
+
+export function getPokemonDetail(idOrName: string | number) {
+  return apiGet<PokemonDetailLite>(`/pokemon/${idOrName}`);
 }
