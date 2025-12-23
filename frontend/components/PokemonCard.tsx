@@ -144,9 +144,16 @@ export const TYPE_ICON: Record<
 
 type Props = {
   item: PokemonSummary;
+  /**
+   * Optional click handler to make the card selectable (renders as a <button>).
+   * When omitted, it renders as a Link to the Pokémon detail page.
+   */
+  onSelect?: (item: PokemonSummary) => void;
+  /** Optional selected visual state (used when selectable). */
+  selected?: boolean;
 };
 
-export default function PokemonCard({ item }: Props) {
+export default function PokemonCard({ item, onSelect, selected = false }: Props) {
   const primaryType = (item.types[0] ?? '').toLowerCase();
   const theme = TYPE_THEME[primaryType] ?? {
     chip: 'bg-slate-200 text-slate-900',
@@ -155,12 +162,12 @@ export default function PokemonCard({ item }: Props) {
   };
   const PrimaryIcon = TYPE_ICON[primaryType] ?? Circle;
 
-  return (
-    <Link
-      href={`/pokemon/${item.id}`}
-      className="group block overflow-hidden rounded-2xl border border-slate-200/80 bg-white ring-1 ring-black/5 shadow-md shadow-slate-900/5 transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-xl hover:shadow-slate-900/10 focus:outline-none focus:ring-2 focus:ring-slate-900/20"
-      aria-label={`Open details for ${item.name}`}
-    >
+  const baseClassName =
+    'group block overflow-hidden rounded-2xl border border-slate-200/80 bg-white ring-1 ring-black/5 shadow-md shadow-slate-900/5 transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-xl hover:shadow-slate-900/10 focus:outline-none focus:ring-2 focus:ring-slate-900/20';
+
+  const className = `${baseClassName} ${selected ? 'ring-2 ring-slate-900/20' : ''}`;
+
+  const content = (
       <div className="flex items-stretch">
         <div className="flex-1 px-4 py-3">
           <div className="text-[11px] text-slate-600 tracking-wide">
@@ -216,6 +223,28 @@ export default function PokemonCard({ item }: Props) {
           )}
         </div>
       </div>
+  );
+
+  if (onSelect) {
+    return (
+      <button
+        type="button"
+        className={className}
+        onClick={() => onSelect(item)}
+        aria-label={`Select ${item.name}`}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <Link
+      href={`/pokemon/${item.id}`}
+      className={className}
+      aria-label={`Open details for ${item.name}`}
+    >
+      {content}
     </Link>
   );
 }
