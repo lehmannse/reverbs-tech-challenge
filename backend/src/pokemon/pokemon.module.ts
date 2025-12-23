@@ -13,3 +13,4 @@ import { PokeApiService } from '../shared/pokeapi.service.js';
 export class PokemonModule {}
 
 
+

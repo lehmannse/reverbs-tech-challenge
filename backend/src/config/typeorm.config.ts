@@ -1,24 +1,22 @@
 import { DataSourceOptions } from 'typeorm';
 import { BattleResult } from '../battle/battle-result.entity.js';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 export function typeOrmConfig(): DataSourceOptions {
-  const host = process.env.DB_HOST ?? 'localhost';
-  const port = parseInt(process.env.DB_PORT ?? '5432', 10);
-  const username = process.env.DB_USER ?? 'pokedex';
-  const password = process.env.DB_PASS ?? 'pokedex';
-  const database = process.env.DB_NAME ?? 'pokedex';
+  const database = process.env.DB_PATH ?? 'data/pokedex.sqlite';
+  const dir = path.dirname(database);
+  if (dir && dir !== '.' && !fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
 
   return {
-    type: 'postgres',
-    host,
-    port,
-    username,
-    password,
-    database,
+    type: 'sqlite',
+    database: database,
     entities: [BattleResult],
     synchronize: true,
-    ssl: false
   };
 }
+
 
 
