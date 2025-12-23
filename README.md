@@ -25,7 +25,7 @@ Services
   - Environment:
     - DB_PATH (optional, defaults to data/pokedex.sqlite)
     - GEMINI_API_KEY (required for battle narration)
-    - GEMINI_MODEL (optional override)
+    - GEMINI_MODEL (optional override; suggested: gemini-2.5-flash-lite)
 - frontend (Next.js)
   - Port: 3000
   - Environment:
