@@ -43,6 +43,8 @@ Local troubleshooting
 
 - If ports 3000/3001 are in use, stop the other processes or change mappings in docker-compose.yml
 - SQLite DB lives at `backend/data/pokedex.sqlite` (or `DB_PATH`).
+  - The database file is created automatically on first run (TypeORM `synchronize=true`).
+  - To reset, delete `backend/data/pokedex.sqlite` and restart the backend.
 
 Notes
 
