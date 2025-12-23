@@ -1,4 +1,4 @@
-Monolith Pokedex (Docker Compose: Next.js 14 + NestJS + PostgreSQL)
+Monolith Pokedex (Docker Compose: Next.js + NestJS + SQLite)
 
 Prerequisites
 
@@ -20,19 +20,12 @@ Quick start
 
 Services
 
-- db (PostgreSQL)
-  - Port: 5432 (exposed)
-  - Persistent volume: pgdata
-  - Default credentials in compose: user=pokedex password=pokedex db=pokedex
 - backend (NestJS)
-  - Port: 3001 (maps to container 3000)
+  - Port: 3001
   - Environment:
-    - DB_HOST=db
-    - DB_PORT=5432
-    - DB_USER=pokedex
-    - DB_PASS=pokedex
-    - DB_NAME=pokedex
-    - AI_API_KEY (optional placeholder)
+    - DB_PATH (optional, defaults to data/pokedex.sqlite)
+    - GEMINI_API_KEY (required for battle narration)
+    - GEMINI_MODEL (optional override)
 - frontend (Next.js)
   - Port: 3000
   - Environment:
@@ -43,19 +36,16 @@ Backend API (summary)
 - GET /pokemon?offset=&limit= — list Pokémon (via PokeAPI)
 - GET /pokemon/:id — Pokémon detail (via PokeAPI)
 - POST /battle/simulate — simulate a battle
-  - Body: { "pokemon1Name": "pikachu", "pokemon2Name": "bulbasaur" }
+  - Body: { "pokemon1Id": 25, "pokemon2Id": 1 }
 - GET /battle/results — recent battle results
 
 Local troubleshooting
 
-- If ports 3000/3001/5432 are in use, stop the other processes or change mappings in docker-compose.yml
-- Reset DB volume:
-  - docker compose down
-  - docker volume rm reverbstechchallenge_pgdata (or use `docker volume ls` to find the exact name)
-  - docker compose up -d --build
+- If ports 3000/3001 are in use, stop the other processes or change mappings in docker-compose.yml
+- SQLite DB lives at `backend/data/pokedex.sqlite` (or `DB_PATH`).
 
 Notes
 
 - The backend enables CORS for http://localhost:3000
 - TypeORM synchronize=true is enabled for bootstrapping; switch to migrations for production use
-- The Battle AI service is a placeholder and reads AI_API_KEY; no external calls are made
+- Battle narration uses Gemini (requires `GEMINI_API_KEY`)

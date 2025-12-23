@@ -1,39 +1,19 @@
 services:
-  db:
-    image: postgres:16-alpine
-    container_name: pokedex_db
-    environment:
-      POSTGRES_USER: pokedex
-      POSTGRES_PASSWORD: pokedex
-      POSTGRES_DB: pokedex
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    ports:
-      - "5432:5432"
-
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
     container_name: pokedex_backend
-    depends_on:
-      db:
-        condition: service_healthy
     environment:
       NODE_ENV: production
-      DB_HOST: db
-      DB_PORT: "5432"
-      DB_USER: pokedex
-      DB_PASS: pokedex
-      DB_NAME: pokedex
-      AI_API_KEY: ""
+      # SQLite (persisted via volume mount below). Override if desired.
+      DB_PATH: data/pokedex.sqlite
+      # Provide this at runtime (do not commit secrets):
+      # GEMINI_API_KEY: "..."
     ports:
-      - "3001:3000"
+      - "3001:3001"
+    volumes:
+      - ./backend/data:/app/backend/data
 
   frontend:
     build:
@@ -47,8 +27,4 @@ services:
       NODE_ENV: production
     ports:
       - "3000:3000"
-
-volumes:
-  pgdata:
-
 
