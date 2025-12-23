@@ -4,6 +4,10 @@ import { mapPokemonToDetailLite, mapPokemonToSummary } from './pokemon.mapper.js
 import type { PokemonListEnrichedResponse, PokemonSummary } from '../../../shared/types/pokemon';
 import type { PokemonDetailLite } from '../../../shared/types/pokemon';
 
+export type PokemonBattleProfile = PokemonDetailLite & {
+  moves: string[];
+};
+
 @Injectable()
 export class PokemonService {
   constructor(private readonly pokeApi: PokeApiService) {}
@@ -11,6 +15,19 @@ export class PokemonService {
   async getPokemonDetailLite(idOrName: string): Promise<PokemonDetailLite> {
     const details = await this.pokeApi.getPokemonDetails(idOrName);
     return mapPokemonToDetailLite(details);
+  }
+
+  async getPokemonBattleProfile(idOrName: string): Promise<PokemonBattleProfile> {
+    const details = await this.pokeApi.getPokemonDetails(idOrName);
+    const lite = mapPokemonToDetailLite(details);
+    const moves: string[] = Array.isArray(details?.moves)
+      ? details.moves
+          .map((m: any) => m?.move?.name)
+          .filter(Boolean)
+          .slice(0, 40)
+      : [];
+
+    return { ...lite, moves };
   }
 
   listPokemon(offset = 0, limit = 20) {

@@ -2,6 +2,7 @@ import type {
   PokemonDetailLite,
   PokemonListEnrichedResponse,
 } from '../../shared/types/pokemon';
+import type { BattleResultDto } from '../../shared/types/battle';
 
 function getBaseUrl() {
   const raw = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:3001';
@@ -56,4 +57,8 @@ export function getPokemonList(offset = 0, limit = 20) {
 
 export function getPokemonDetail(idOrName: string | number) {
   return apiGet<PokemonDetailLite>(`/pokemon/${idOrName}`);
+}
+
+export function simulateBattle(pokemon1Id: number, pokemon2Id: number) {
+  return apiPost<BattleResultDto>('/battle/simulate', { pokemon1Id, pokemon2Id });
 }
