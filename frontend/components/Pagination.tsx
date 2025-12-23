@@ -1,121 +1,110 @@
 import Link from 'next/link';
+import type { UrlObject } from 'url';
 
-type PaginationProps = {
-  currentPage: number;
-  totalPages: number;
-  basePath: string; // e.g. "/list"
-  pageParam?: string; // default: "page"
-  siblingCount?: number; // default: 1
-  className?: string;
-};
+type PageItem = number | 'ellipsis';
 
-function createPageRange(
+function buildPageItems(
   current: number,
   total: number,
-  siblingCount: number
-): (number | '...')[] {
-  const totalNumbers = siblingCount * 2 + 5; // first, last, current, 2*siblings, and 2 ellipses
-  if (total <= totalNumbers) {
-    return Array.from({ length: total }, (_, i) => i + 1);
-  }
+  siblingCount = 1
+): PageItem[] {
+  if (total <= 1) return [1];
 
-  const leftSiblingIndex = Math.max(current - siblingCount, 1);
-  const rightSiblingIndex = Math.min(current + siblingCount, total);
-  const showLeftEllipsis = leftSiblingIndex > 2;
-  const showRightEllipsis = rightSiblingIndex < total - 1;
+  const clamp = (n: number) => Math.max(1, Math.min(total, n));
+  const c = clamp(current);
 
-  const pages: (number | '...')[] = [1];
+  const first = 1;
+  const last = total;
+  const left = Math.max(first + 1, c - siblingCount);
+  const right = Math.min(last - 1, c + siblingCount);
 
-  if (showLeftEllipsis) {
-    pages.push('...');
-  }
+  const items: PageItem[] = [first];
 
-  for (let i = leftSiblingIndex; i <= rightSiblingIndex; i++) {
-    if (i !== 1 && i !== total) pages.push(i);
-  }
+  if (left > first + 1) items.push('ellipsis');
+  for (let p = left; p <= right; p++) items.push(p);
+  if (right < last - 1) items.push('ellipsis');
 
-  if (showRightEllipsis) {
-    pages.push('...');
-  }
+  if (last !== first) items.push(last);
+  return items;
+}
 
-  if (total > 1) pages.push(total);
+function hrefForPage(basePath: string, page: number): UrlObject {
+  const normalizedBase = basePath.startsWith('/') ? basePath : `/${basePath}`;
+  const url = new URL(normalizedBase, 'http://example.local');
+  url.searchParams.set('page', String(page));
 
-  return pages;
+  return {
+    pathname: url.pathname,
+    query: Object.fromEntries(url.searchParams.entries()),
+  };
 }
 
 export default function Pagination({
   currentPage,
   totalPages,
   basePath,
-  pageParam = 'page',
-  siblingCount = 1,
-  className,
-}: PaginationProps) {
-  if (totalPages <= 1) return null;
+}: {
+  currentPage: number;
+  totalPages: number;
+  basePath: string;
+}) {
+  const total = Math.max(1, totalPages);
+  const current = Math.max(1, Math.min(total, currentPage));
 
-  const prevPage = Math.max(1, currentPage - 1);
-  const nextPage = Math.min(totalPages, currentPage + 1);
-  const disabledPrev = currentPage === 1;
-  const disabledNext = currentPage === totalPages;
-
-  const pages = createPageRange(currentPage, totalPages, siblingCount);
-
-  const toWithPage = (p: number) => {
-    const url = new URL(basePath, 'http://localhost'); // base for URL formatting only
-    url.searchParams.set(pageParam, String(p));
-    // Remove origin part; keep path + search
-    return url.pathname + url.search;
-  };
-
-  const baseClasses =
-    'inline-flex items-center justify-center rounded border border-slate-300 px-3 py-1.5 text-sm bg-white hover:bg-slate-50';
+  const items = buildPageItems(current, total, 1);
+  const prev = Math.max(1, current - 1);
+  const next = Math.min(total, current + 1);
 
   return (
     <nav
       aria-label="Pagination"
-      className={className ?? 'flex items-center justify-between gap-2'}
+      className="flex flex-wrap items-center justify-center gap-2"
     >
       <Link
-        aria-disabled={disabledPrev}
-        className={`${baseClasses} ${
-          disabledPrev ? 'pointer-events-none opacity-50' : ''
+        aria-disabled={current === 1}
+        tabIndex={current === 1 ? -1 : 0}
+        href={hrefForPage(basePath, prev)}
+        className={`btn-outline btn-sm ${
+          current === 1 ? 'pointer-events-none opacity-50' : ''
         }`}
-        href={toWithPage(prevPage)}
       >
-        ← Prev
+        Prev
       </Link>
-      <div className="flex items-center gap-1">
-        {pages.map((p, idx) =>
-          p === '...' ? (
-            <span key={`dots-${idx}`} className="px-2 text-slate-500">
-              …
-            </span>
-          ) : (
+
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        {items.map((it, idx) => {
+          if (it === 'ellipsis') {
+            return (
+              <span key={`e-${idx}`} className="px-2 text-sm text-slate-500">
+                …
+              </span>
+            );
+          }
+
+          const isCurrent = it === current;
+          return (
             <Link
-              key={p}
-              href={toWithPage(p)}
-              aria-current={p === currentPage ? 'page' : undefined}
-              className={`${baseClasses} ${
-                p === currentPage
-                  ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-600'
-                  : ''
-              }`}
+              key={it}
+              href={hrefForPage(basePath, it)}
+              aria-current={isCurrent ? 'page' : undefined}
+              className={isCurrent ? 'btn-solid btn-sm' : 'btn-ghost btn-sm'}
             >
-              {p}
+              {it}
             </Link>
-          )
-        )}
+          );
+        })}
       </div>
+
       <Link
-        aria-disabled={disabledNext}
-        className={`${baseClasses} ${
-          disabledNext ? 'pointer-events-none opacity-50' : ''
+        aria-disabled={current === total}
+        tabIndex={current === total ? -1 : 0}
+        href={hrefForPage(basePath, next)}
+        className={`btn-outline btn-sm ${
+          current === total ? 'pointer-events-none opacity-50' : ''
         }`}
-        href={toWithPage(nextPage)}
       >
-        Next →
+        Next
       </Link>
     </nav>
   );
 }
-
