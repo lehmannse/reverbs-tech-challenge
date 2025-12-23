@@ -49,7 +49,7 @@ export default async function ListPage({
         {data.results.map((p: PokemonSummary, idx: number) => (
           <div
             key={p.id}
-            className="card-enter"
+            className="card-enter flex items-center justify-center"
             style={{ ['--stagger-index' as any]: idx }}
           >
             <PokemonCard item={p} />
