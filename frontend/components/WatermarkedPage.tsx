@@ -19,7 +19,7 @@ export default function WatermarkedPage({
   children,
   className = '',
   containerClassName = '',
-  watermarkSize = 380,
+  watermarkSize = 420,
   watermarkColorClassName = 'text-slate-900',
   watermarkOpacityClassName = 'opacity-[0.06]',
 }: Props) {
@@ -29,11 +29,11 @@ export default function WatermarkedPage({
     >
       <div
         aria-hidden
-        className={`pointer-events-none absolute -left-24 -top-24 ${watermarkOpacityClassName}`}
+        className={`pointer-events-none absolute -left-28 -top-28 ${watermarkOpacityClassName}`}
       >
         <PokeballIcon
           size={watermarkSize}
-          strokeWidth={1.25}
+          strokeWidth={1.5}
           className={watermarkColorClassName}
         />
       </div>
@@ -44,5 +44,3 @@ export default function WatermarkedPage({
     </main>
   );
 }
-
-
